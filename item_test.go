@@ -12,6 +12,7 @@ func CreateItem(app *zapi.Application, t *testing.T) *zapi.Item {
 		Key:            "key.lala.laa",
 		Name:           "name for key",
 		Type:           zapi.ZabbixTrapper,
+		Delay:          "0",
 		ApplicationIds: []string{app.ApplicationID},
 	}}
 	err := getAPI(t).ItemsCreate(items)
