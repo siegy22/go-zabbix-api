@@ -9,31 +9,31 @@ import (
 	zapi "github.com/claranet/go-zabbix-api"
 )
 
-func CreateHostGroup(t *testing.T) *zapi.HostGroup {
+func testCreateHostGroup(t *testing.T) *zapi.HostGroup {
 	hostGroups := zapi.HostGroups{{Name: fmt.Sprintf("zabbix-testing-%d", rand.Int())}}
-	err := getAPI(t).HostGroupsCreate(hostGroups)
+	err := testGetAPI(t).HostGroupsCreate(hostGroups)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return &hostGroups[0]
 }
 
-func DeleteHostGroup(hostGroup *zapi.HostGroup, t *testing.T) {
-	err := getAPI(t).HostGroupsDelete(zapi.HostGroups{*hostGroup})
+func testDeleteHostGroup(hostGroup *zapi.HostGroup, t *testing.T) {
+	err := testGetAPI(t).HostGroupsDelete(zapi.HostGroups{*hostGroup})
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestHostGroups(t *testing.T) {
-	api := getAPI(t)
+	api := testGetAPI(t)
 
 	groups, err := api.HostGroupsGet(zapi.Params{})
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	hostGroup := CreateHostGroup(t)
+	hostGroup := testCreateHostGroup(t)
 	if hostGroup.GroupID == "" || hostGroup.Name == "" {
 		t.Errorf("Something is empty: %#v", hostGroup)
 	}
@@ -54,7 +54,7 @@ func TestHostGroups(t *testing.T) {
 		t.Errorf("Error creating group.\nOld groups: %#v\nNew groups: %#v", groups, groups2)
 	}
 
-	DeleteHostGroup(hostGroup, t)
+	testDeleteHostGroup(hostGroup, t)
 
 	groups2, err = api.HostGroupsGet(zapi.Params{})
 	if err != nil {

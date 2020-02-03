@@ -6,7 +6,7 @@ import (
 	dd "github.com/claranet/go-zabbix-api"
 )
 
-func CreateLLDRule(template *dd.Template, t *testing.T) *dd.LLDRule {
+func testCreateLLDRule(template *dd.Template, t *testing.T) *dd.LLDRule {
 	lldrulefiltercondition := dd.LLDRulesFilterCondition{
 		LLDMacro: "{#MY_MACRO_NAME_FD}",
 		Value:    "^lo$",
@@ -25,30 +25,30 @@ func CreateLLDRule(template *dd.Template, t *testing.T) *dd.LLDRule {
 		Type:        dd.ZabbixAgent,
 		Filter:      lldrulefilter,
 	}}
-	err := getAPI(t).DiscoveryRulesCreate(lldrules)
+	err := testGetAPI(t).DiscoveryRulesCreate(lldrules)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return &lldrules[0]
 }
 
-func DeleteLLDRule(rule *dd.LLDRule, t *testing.T) {
-	err := getAPI(t).DiscoveryRulesDelete(dd.LLDRules{*rule})
+func testDeleteLLDRule(rule *dd.LLDRule, t *testing.T) {
+	err := testGetAPI(t).DiscoveryRulesDelete(dd.LLDRules{*rule})
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestLLDRule(t *testing.T) {
-	api := getAPI(t)
+	api := testGetAPI(t)
 
-	hostGroup := CreateHostGroup(t)
-	defer DeleteHostGroup(hostGroup, t)
+	hostGroup := testCreateHostGroup(t)
+	defer testDeleteHostGroup(hostGroup, t)
 
-	template := CreateTemplate(hostGroup, t)
-	defer DeleteTemplate(template, t)
+	template := testCreateTemplate(hostGroup, t)
+	defer testDeleteTemplate(template, t)
 
-	lldRule := CreateLLDRule(template, t)
+	lldRule := testCreateLLDRule(template, t)
 
 	getlldRule, err := api.DiscoveryRulesGet(dd.Params{"itemids": lldRule.ItemID})
 	if err != nil {
@@ -72,6 +72,5 @@ func TestLLDRule(t *testing.T) {
 		t.Errorf("LLD rule name is %q and should be %q", updateRule.Name, lldRule.Name)
 	}
 
-	DeleteLLDRule(lldRule, t)
-
+	testDeleteLLDRule(lldRule, t)
 }

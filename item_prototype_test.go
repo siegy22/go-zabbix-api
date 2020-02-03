@@ -6,7 +6,7 @@ import (
 	dd "github.com/claranet/go-zabbix-api"
 )
 
-func createItemPrototype(template *dd.Template, lldRule *dd.LLDRule, t *testing.T) *dd.ItemPrototype {
+func testCreateItemPrototype(template *dd.Template, lldRule *dd.LLDRule, t *testing.T) *dd.ItemPrototype {
 	items := dd.ItemPrototypes{{
 		RuleID:      lldRule.ItemID,
 		Delay:       "30",
@@ -17,33 +17,33 @@ func createItemPrototype(template *dd.Template, lldRule *dd.LLDRule, t *testing.
 		Name:        "item prototype test",
 		ValueType:   dd.Unsigned,
 	}}
-	err := getAPI(t).ItemPrototypesCreate(items)
+	err := testGetAPI(t).ItemPrototypesCreate(items)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return &items[0]
 }
 
-func deleteItemPrototype(item *dd.ItemPrototype, t *testing.T) {
-	err := getAPI(t).ItemPrototypesDelete(dd.ItemPrototypes{*item})
+func testDeleteItemPrototype(item *dd.ItemPrototype, t *testing.T) {
+	err := testGetAPI(t).ItemPrototypesDelete(dd.ItemPrototypes{*item})
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
 func testItemPrototype(t *testing.T) {
-	api := getAPI(t)
+	api := testGetAPI(t)
 
-	hostGroup := CreateHostGroup(t)
-	defer DeleteHostGroup(hostGroup, t)
+	hostGroup := testCreateHostGroup(t)
+	defer testDeleteHostGroup(hostGroup, t)
 
-	template := CreateTemplate(hostGroup, t)
-	defer DeleteTemplate(template, t)
+	template := testCreateTemplate(hostGroup, t)
+	defer testDeleteTemplate(template, t)
 
-	lldRule := CreateLLDRule(template, t)
-	defer DeleteLLDRule(lldRule, t)
+	lldRule := testCreateLLDRule(template, t)
+	defer testDeleteLLDRule(lldRule, t)
 
-	itemPrototype := createItemPrototype(template, lldRule, t)
+	itemPrototype := testCreateItemPrototype(template, lldRule, t)
 
 	getItemPrototype, err := api.ItemPrototypesGet(dd.Params{"itemids": itemPrototype.ItemID})
 	if err != nil {
@@ -67,5 +67,5 @@ func testItemPrototype(t *testing.T) {
 		t.Errorf("Item prototype name is %q and should be %q", getByIdItemPrototype.Name, itemPrototype.Name)
 	}
 
-	deleteItemPrototype(itemPrototype, t)
+	testDeleteItemPrototype(itemPrototype, t)
 }

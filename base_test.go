@@ -32,11 +32,11 @@ func init() {
 	}
 }
 
-func getHost() string {
+func testGetHost() string {
 	return _host
 }
 
-func getAPI(t *testing.T) *zapi.API {
+func testGetAPI(t *testing.T) *zapi.API {
 	if _api != nil {
 		return _api
 	}
@@ -63,7 +63,7 @@ func getAPI(t *testing.T) *zapi.API {
 }
 
 func TestBadCalls(t *testing.T) {
-	api := getAPI(t)
+	api := testGetAPI(t)
 	res, err := api.Call("", nil)
 	if err != nil {
 		t.Fatal(err)
@@ -74,7 +74,7 @@ func TestBadCalls(t *testing.T) {
 }
 
 func TestVersion(t *testing.T) {
-	api := getAPI(t)
+	api := testGetAPI(t)
 	v, err := api.Version()
 	if err != nil {
 		t.Fatal(err)
@@ -83,11 +83,4 @@ func TestVersion(t *testing.T) {
 	if !regexp.MustCompile(`^\d\.\d\.\d+$`).MatchString(v) {
 		t.Errorf("Unexpected version: %s", v)
 	}
-}
-
-func ExampleAPI_Call() {
-	api := zapi.NewAPI("http://host/api_jsonrpc.php")
-	api.Login("user", "password")
-	res, _ := api.Call("item.get", zapi.Params{"itemids": "23970", "output": "extend"})
-	log.Print(res)
 }
