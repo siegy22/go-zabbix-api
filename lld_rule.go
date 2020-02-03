@@ -1,9 +1,5 @@
 package zabbix
 
-import (
-	"encoding/json"
-)
-
 // LLDRulesFilterCondition represent zabbix low-level discovery rules filter condition(LLD rule file condition) object
 // https://www.zabbix.com/documentation/3.2/manual/api/reference/discoveryrule/object#lld_rule_filter_condition
 type LLDRulesFilterCondition struct {
@@ -65,13 +61,6 @@ type LLDRule struct {
 
 // LLDRules is an array of LLDRule
 type LLDRules []LLDRule
-
-type templ struct {
-	Jsonrpc string          `json:"jsonrpc"`
-	Error   *Error          `json:"error"`
-	Result  json.RawMessage `json:"result"`
-	ID      int32           `json:"id"`
-}
 
 // DiscoveryRulesGet Wrapper for discoveryrule.get
 // https://www.zabbix.com/documentation/3.2/manual/api/reference/discoveryrule/get
