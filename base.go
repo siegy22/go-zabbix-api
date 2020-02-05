@@ -181,14 +181,16 @@ func (api *API) Login(user, password string) (auth string, err error) {
 // Version Calls "APIInfo.version" API method.
 // This method temporary modifies API structure and should not be called concurrently with other methods.
 func (api *API) Version() (v string, err error) {
-	// temporary remove auth for this method to succeed
-	// https://www.zabbix.com/documentation/2.2/manual/appendix/api/apiinfo/version
-	auth := api.Auth
-	api.Auth = ""
-	response, err := api.CallWithError("APIInfo.version", Params{})
-	api.Auth = auth
+	// Remove auth from a temporary api clone for this method to succeed with Zabbix 2.4+
+	// See https://www.zabbix.com/documentation/2.4/manual/appendix/api/apiinfo/version
+	// And https://www.zabbix.com/documentation/4.4/manual/api/reference/apiinfo/version
+	// And https://www.zabbix.com/documentation/5.0/manual/api/reference/apiinfo/version
+	tempApi := *api
+	tempApi.Auth = ""
+	response, err := tempApi.CallWithError("APIInfo.version", Params{})
 
-	// despite what documentation says, Zabbix 2.2 requires auth, so we try again
+	// Despite what documentation says, Zabbix 2.2 requires auth, so we try again
+	// See https://www.zabbix.com/documentation/2.2/manual/appendix/api/apiinfo/version
 	if e, ok := err.(*Error); ok && e.Code == -32602 {
 		response, err = api.CallWithError("APIInfo.version", Params{})
 	}
