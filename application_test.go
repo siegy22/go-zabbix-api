@@ -9,37 +9,37 @@ import (
 	zapi "github.com/claranet/go-zabbix-api"
 )
 
-func CreateApplication(host *zapi.Host, t *testing.T) *zapi.Application {
+func testCreateApplication(host *zapi.Host, t *testing.T) *zapi.Application {
 	apps := zapi.Applications{{HostID: host.HostID, Name: fmt.Sprintf("App %d for %s", rand.Int(), host.Host)}}
-	err := getAPI(t).ApplicationsCreate(apps)
+	err := testGetAPI(t).ApplicationsCreate(apps)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return &apps[0]
 }
 
-func DeleteApplication(app *zapi.Application, t *testing.T) {
-	err := getAPI(t).ApplicationsDelete(zapi.Applications{*app})
+func testDeleteApplication(app *zapi.Application, t *testing.T) {
+	err := testGetAPI(t).ApplicationsDelete(zapi.Applications{*app})
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestApplications(t *testing.T) {
-	api := getAPI(t)
+	api := testGetAPI(t)
 
-	group := CreateHostGroup(t)
-	defer DeleteHostGroup(group, t)
+	group := testCreateHostGroup(t)
+	defer testDeleteHostGroup(group, t)
 
-	host := CreateHost(group, t)
-	defer DeleteHost(host, t)
+	host := testCreateHost(group, t)
+	defer testDeleteHost(host, t)
 
-	app := CreateApplication(host, t)
+	app := testCreateApplication(host, t)
 	if app.ApplicationID == "" {
 		t.Errorf("Id is empty: %#v", app)
 	}
 
-	app2 := CreateApplication(host, t)
+	app2 := testCreateApplication(host, t)
 	if app2.ApplicationID == "" {
 		t.Errorf("Id is empty: %#v", app2)
 	}
@@ -73,5 +73,5 @@ func TestApplications(t *testing.T) {
 		t.Errorf("Apps are not equal:\n%#v\n%#v", app, app2)
 	}
 
-	DeleteApplication(app, t)
+	testDeleteApplication(app, t)
 }

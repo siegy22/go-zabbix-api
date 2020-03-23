@@ -6,39 +6,40 @@ import (
 	zapi "github.com/claranet/go-zabbix-api"
 )
 
-func CreateItem(app *zapi.Application, t *testing.T) *zapi.Item {
+func testCreateItem(app *zapi.Application, t *testing.T) *zapi.Item {
 	items := zapi.Items{{
 		HostID:         app.HostID,
 		Key:            "key.lala.laa",
 		Name:           "name for key",
 		Type:           zapi.ZabbixTrapper,
+		Delay:          "0",
 		ApplicationIds: []string{app.ApplicationID},
 	}}
-	err := getAPI(t).ItemsCreate(items)
+	err := testGetAPI(t).ItemsCreate(items)
 	if err != nil {
 		t.Fatal(err)
 	}
 	return &items[0]
 }
 
-func DeleteItem(item *zapi.Item, t *testing.T) {
-	err := getAPI(t).ItemsDelete(zapi.Items{*item})
+func testDeleteItem(item *zapi.Item, t *testing.T) {
+	err := testGetAPI(t).ItemsDelete(zapi.Items{*item})
 	if err != nil {
 		t.Fatal(err)
 	}
 }
 
 func TestItems(t *testing.T) {
-	api := getAPI(t)
+	api := testGetAPI(t)
 
-	group := CreateHostGroup(t)
-	defer DeleteHostGroup(group, t)
+	group := testCreateHostGroup(t)
+	defer testDeleteHostGroup(group, t)
 
-	host := CreateHost(group, t)
-	defer DeleteHost(host, t)
+	host := testCreateHost(group, t)
+	defer testDeleteHost(host, t)
 
-	app := CreateApplication(host, t)
-	defer DeleteApplication(app, t)
+	app := testCreateApplication(host, t)
+	defer testDeleteApplication(app, t)
 
 	items, err := api.ItemsGetByApplicationID(app.ApplicationID)
 	if err != nil {
@@ -48,7 +49,7 @@ func TestItems(t *testing.T) {
 		t.Fatal("Found items")
 	}
 
-	item := CreateItem(app, t)
+	item := testCreateItem(app, t)
 
 	_, err = api.ItemGetByID(item.ItemID)
 	if err != nil {
@@ -61,5 +62,5 @@ func TestItems(t *testing.T) {
 		t.Error(err)
 	}
 
-	DeleteItem(item, t)
+	testDeleteItem(item, t)
 }

@@ -11,7 +11,7 @@ type Template struct {
 	UserMacros      Macros     `json:"macros"`
 	LinkedTemplates Templates  `json:"templates,omitempty"`
 	TemplatesClear  Templates  `json:"templates_clear,omitempty"`
-	LinkedHosts     []string   `json:"hosts,omitempty"`
+	LinkedHosts     Hosts      `json:"hosts,omitempty"`
 }
 
 // Templates is an Array of Template structs.
