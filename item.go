@@ -56,8 +56,8 @@ const (
 	JMXAgent ItemType = 16
 	// SNMPTrap type
 	SNMPTrap ItemType = 17
-	// DEPENDENTItem type
-	DEPENDENTItem ItemType = 18
+	// DependentItem type
+	DependentItem ItemType = 18
 	//HTTPAgent type
 	HTTPAgent ItemType = 19
 )
