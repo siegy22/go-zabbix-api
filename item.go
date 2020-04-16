@@ -17,8 +17,8 @@ type (
 
 const (
 	// Different item type, see :
-	// - "type" in https://www.zabbix.com/documentation/3.2/manual/api/reference/item/object
-	// - https://www.zabbix.com/documentation/3.2/manual/config/items/itemtypes
+	// - "type" in https://www.zabbix.com/documentation/4.4/manual/api/reference/item/object
+	// - https://www.zabbix.com/documentation/4.4/manual/config/items/itemtypes
 
 	// ZabbixAgent type
 	ZabbixAgent ItemType = 0
