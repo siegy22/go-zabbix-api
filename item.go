@@ -54,7 +54,7 @@ const (
 	Calculated ItemType = 15
 	// JMXAgent type
 	JMXAgent ItemType = 16
-	// SNMPTrap type
+	// SNMPTrap type (new in 2.2)
 	SNMPTrap ItemType = 17
 	// DependentItem type
 	DependentItem ItemType = 18
