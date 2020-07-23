@@ -36,10 +36,14 @@ type Host struct {
 	Name      string        `json:"name"`
 	Status    StatusType    `json:"status,string"`
 
+	// Fields below used if specified selectInterfaces or selectMacros or selectParentTemplates parameters
+	Interfaces HostInterfaces `json:"interfaces,omitempty"`
+	UserMacros Macros         `json:"macros,omitempty"`
+	Templates  Templates      `json:"parentTemplates,omitempty"`
+
 	// Fields below used only when creating hosts
-	GroupIds    HostGroupIDs   `json:"groups,omitempty"`
-	Interfaces  HostInterfaces `json:"interfaces,omitempty"`
-	TemplateIDs TemplateIDs    `json:"templates,omitempty"`
+	GroupIds    HostGroupIDs `json:"groups,omitempty"`
+	TemplateIDs TemplateIDs  `json:"templates,omitempty"`
 }
 
 // Hosts is an array of Host
