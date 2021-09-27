@@ -15,12 +15,13 @@ const (
 // User represent Zabbix user group object
 // https://www.zabbix.com/documentation/4.0/manual/api/reference/user/object
 type User struct {
-	UserID  string   `json:"userid,omitempty"`
-	Alias   string   `json:"alias"`
-	Name    string   `json:"name,omitempty"`
-	Surname string   `json:"surname,omitempty"`
-	Type    UserType `json:"type,string,omitempty"`
-	Url     string   `json:"url,omitempty"`
+	UserID   string   `json:"userid,omitempty"`
+	Alias    string   `json:"alias"`
+	Username string   `json:"username"` // Renamed field alias → username in user object from 5.4↑
+	Name     string   `json:"name,omitempty"`
+	Surname  string   `json:"surname,omitempty"`
+	Type     UserType `json:"type,string,omitempty"`
+	Url      string   `json:"url,omitempty"`
 }
 
 // Users is an array of User
