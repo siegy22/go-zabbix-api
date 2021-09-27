@@ -22,12 +22,13 @@ const (
 // HostInterface represents zabbix host interface type
 // https://www.zabbix.com/documentation/3.2/manual/api/reference/hostinterface/object
 type HostInterface struct {
-	DNS   string        `json:"dns"`
-	IP    string        `json:"ip"`
-	Main  int           `json:"main"`
-	Port  string        `json:"port"`
-	Type  InterfaceType `json:"type"`
-	UseIP int           `json:"useip"`
+	InterfaceID string        `json:"interfaceid,omitempty"`
+	DNS         string        `json:"dns"`
+	IP          string        `json:"ip"`
+	Main        int           `json:"main,string"`
+	Port        string        `json:"port"`
+	Type        InterfaceType `json:"type,string"`
+	UseIP       int           `json:"useip,string"`
 }
 
 // HostInterfaces is an array of HostInterface

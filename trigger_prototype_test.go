@@ -28,7 +28,7 @@ func testDeleteTriggerPrototype(trigger *dd.TriggerPrototype, t *testing.T) {
 	}
 }
 
-func testTriggerPrototype(t *testing.T) {
+func TestTriggerPrototype(t *testing.T) {
 	api := testGetAPI(t)
 
 	hostGroup := testCreateHostGroup(t)

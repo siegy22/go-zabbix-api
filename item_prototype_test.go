@@ -31,7 +31,7 @@ func testDeleteItemPrototype(item *dd.ItemPrototype, t *testing.T) {
 	}
 }
 
-func testItemPrototype(t *testing.T) {
+func TestItemPrototype(t *testing.T) {
 	api := testGetAPI(t)
 
 	hostGroup := testCreateHostGroup(t)
