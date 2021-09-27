@@ -1,5 +1,9 @@
 package zabbix
 
+import (
+	"strconv"
+)
+
 type (
 	// Whether to pause escalation during maintenance periods or not.
 	// "pause_suppressed" in https://www.zabbix.com/documentation/4.0/manual/api/reference/action/object#action
@@ -341,7 +345,12 @@ func (api *API) ActionsCreate(actions Actions) (err error) {
 	result := response.Result.(map[string]interface{})
 	actionids := result["actionids"].([]interface{})
 	for i, id := range actionids {
-		actions[i].ActionID = id.(string)
+		switch id.(type) {
+		case string:
+			actions[i].ActionID = id.(string)
+		case float64:
+			actions[i].ActionID = strconv.Itoa(int(id.(float64)))
+		}
 	}
 	return
 }
