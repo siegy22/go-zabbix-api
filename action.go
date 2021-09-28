@@ -144,7 +144,7 @@ type Action struct {
 	AckMessage      string     `json:"ack_longdata"`  // NOTE: no support on Zabbix 5.0 onward
 	AckSubject      string     `json:"ack_shortdata"` // NOTE: no support on Zabbix 5.0 onward
 	Status          StatusType `json:"status,omitempty,string"`
-	PauseSuppressed PauseType  `json:"pause_suppressed,omitempty,string"`
+	PauseSuppressed *PauseType `json:"pause_suppressed,omitempty,string"`
 
 	Filter             ActionFilter             `json:"filter,omitempty"`
 	Operations         ActionOperations         `json:"operations,omitempty"`
@@ -194,17 +194,17 @@ type ActionOperation struct {
 type ActionOperations []ActionOperation
 
 type ActionOperationCommand struct {
-	OperationID string                             `json:"operationid,omitempty"`
-	Type        ActionOperationCommandType         `json:"type,string"`
-	Command     string                             `json:"command,omitempty"`
-	AuthType    ActionOperationCommandAuthType     `json:"authtype,omitempty,string"`
-	ExecuteOn   ActionOperationCommandExecutorType `json:"execute_on,omitempty,string"`
-	Username    string                             `json:"username,omitempty"`
-	Password    string                             `json:"password,omitempty"`
-	Port        string                             `json:"port,omitempty"`
-	PrivateKey  string                             `json:"privatekey,omitempty"`
-	PublicKey   string                             `json:"publickey,omitempty"`
-	ScriptID    string                             `json:"scriptid,omitempty"`
+	OperationID string                              `json:"operationid,omitempty"`
+	Type        ActionOperationCommandType          `json:"type,string"`
+	Command     string                              `json:"command,omitempty"`
+	AuthType    *ActionOperationCommandAuthType     `json:"authtype,omitempty,string"`
+	ExecuteOn   *ActionOperationCommandExecutorType `json:"execute_on,omitempty,string"`
+	Username    string                              `json:"username,omitempty"`
+	Password    string                              `json:"password,omitempty"`
+	Port        string                              `json:"port,omitempty"`
+	PrivateKey  string                              `json:"privatekey,omitempty"`
+	PublicKey   string                              `json:"publickey,omitempty"`
+	ScriptID    string                              `json:"scriptid,omitempty"`
 }
 
 type ActionOperationCommandHostGroup struct {
