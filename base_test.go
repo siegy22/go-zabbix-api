@@ -10,6 +10,7 @@ import (
 	"time"
 
 	zapi "github.com/claranet/go-zabbix-api"
+	"github.com/hashicorp/go-version"
 )
 
 var (
@@ -60,6 +61,19 @@ func testGetAPI(t *testing.T) *zapi.API {
 	}
 
 	return _api
+}
+
+func skipTestIfVersionGreaterThanOrEqual(t *testing.T, comparedVersion, msg string) {
+	api := testGetAPI(t)
+	serverVersion, err := api.Version()
+	if err != nil {
+		t.Fatal(err)
+	}
+	sVersion, _ := version.NewVersion(serverVersion)
+	cVersion, _ := version.NewVersion(comparedVersion)
+	if sVersion.GreaterThanOrEqual(cVersion) {
+		t.Skipf("Zabbix version %s is greater than or equal to %s which %s, skipping test.", serverVersion, comparedVersion, msg)
+	}
 }
 
 func TestBadCalls(t *testing.T) {
