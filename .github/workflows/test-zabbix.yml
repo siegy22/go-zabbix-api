@@ -1,0 +1,72 @@
+name: Test
+on:
+  push:
+    branches: ["master"]
+  pull_request:
+    branches: ["master"]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        zabbix_version: ["3.0", "3.2", "3.4", "4.0", "4.2", "4.4", "5.0", "5.2"]
+
+    services:
+      mysql-server:
+        image: mysql:5.7
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+        ports:
+          - 3306:3306
+        # needed because the mysql container does not provide a healthcheck
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=10s --health-retries=10
+
+      zabbix-server:
+        image: zabbix/zabbix-server-mysql:alpine-${{ matrix.zabbix_version }}-latest
+        env:
+          DB_SERVER_HOST: mysql-server
+          DB_SERVER_PORT: 3306
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_USER: zabbix
+        ports:
+          - 10051:10051
+
+      zabbix-web-nginx-mysql:
+        image: zabbix/zabbix-web-nginx-mysql:alpine-${{ matrix.zabbix_version }}-latest
+        env:
+          ZBX_SERVER_HOST: zabbix-server
+          ZBX_SERVER_PORT: 10051
+          DB_SERVER_HOST: mysql-server
+          DB_SERVER_PORT: 3306
+          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_USER: zabbix
+        ports:
+          - 8080:8080
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set up Go 1.18
+        uses: actions/setup-go@v3
+        with:
+          go-version: 1.18
+
+      - name: Test
+        env:
+          TEST_ZABBIX_VERBOSE: 1
+          TEST_ZABBIX_URL: http://localhost:8080/api_jsonrpc.php
+          TEST_ZABBIX_USER: Admin
+          TEST_ZABBIX_PASSWORD: zabbix
+        run: |
+          while true ; do
+            output=$(curl -X POST -H 'Content-Type: application/json-rpc' -d '{"jsonrpc":"2.0","method":"user.login","params":{"user":"'$TEST_ZABBIX_USER'","password":"'$TEST_ZABBIX_PASSWORD'"},"id":1,"auth":null}' $TEST_ZABBIX_URL || echo error)
+            echo $output
+            echo $output | grep -v error > /dev/null && break
+            echo "Waiting 5s for Zabbix Server to be ready..."
+            sleep 5
+          done
+
+          go test -v
