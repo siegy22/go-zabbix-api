@@ -43,7 +43,7 @@ jobs:
           MYSQL_ALLOW_EMPTY_PASSWORD: true
           MYSQL_USER: zabbix
         ports:
-          - 8080:8080
+          - 8080:${{ contains(fromJson('["3.2", "3.4", "4.2"]'), matrix.zabbix_version) && '80' || '8080' }}
 
     steps:
       - name: Checkout
