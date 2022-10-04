@@ -8,7 +8,13 @@ import (
 )
 
 func testCreateTrigger(item *zapi.Item, host *zapi.Host, t *testing.T) *zapi.Trigger {
-	expression := fmt.Sprintf("{%s:%s.last()}=0", host.Host, item.Key)
+	var expression string
+	if compGreaterThanOrEqual, _ := isVersionGreaterThanOrEqual(t, "5.4"); compGreaterThanOrEqual {
+		expression = fmt.Sprintf("last(/%s/%s)=0", host.Host, item.Key)
+	} else {
+		expression = fmt.Sprintf("{%s:%s.last()}=0", host.Host, item.Key)
+	}
+
 	triggers := zapi.Triggers{{
 		Description: "trigger description",
 		Expression:  expression,
