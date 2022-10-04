@@ -63,7 +63,7 @@ func testGetAPI(t *testing.T) *zapi.API {
 	return _api
 }
 
-func isVersionGreaterThanOrEqual(t *testing.T, comparedVersion string) (bool, string) {
+func compVersion(t *testing.T, comparedVersion string) (int, string) {
 	api := testGetAPI(t)
 	serverVersion, err := api.Version()
 	if err != nil {
@@ -71,12 +71,28 @@ func isVersionGreaterThanOrEqual(t *testing.T, comparedVersion string) (bool, st
 	}
 	sVersion, _ := version.NewVersion(serverVersion)
 	cVersion, _ := version.NewVersion(comparedVersion)
-	return sVersion.GreaterThanOrEqual(cVersion), serverVersion
+	return sVersion.Compare(cVersion), serverVersion
+}
+
+func isVersionLessThan(t *testing.T, comparedVersion string) (bool, string) {
+	comp, serverVersion := compVersion(t, comparedVersion)
+	return comp < 0, serverVersion
+}
+
+func isVersionGreaterThanOrEqual(t *testing.T, comparedVersion string) (bool, string) {
+	comp, serverVersion := compVersion(t, comparedVersion)
+	return comp >= 0, serverVersion
 }
 
 func skipTestIfVersionGreaterThanOrEqual(t *testing.T, comparedVersion, msg string) {
 	if compGreaterThanOrEqual, serverVersion := isVersionGreaterThanOrEqual(t, comparedVersion); compGreaterThanOrEqual {
 		t.Skipf("Zabbix version %s is greater than or equal to %s which %s, skipping test.", serverVersion, comparedVersion, msg)
+	}
+}
+
+func skipTestIfVersionLessThan(t *testing.T, comparedVersion, msg string) {
+	if compGreaterThanOrEqual, serverVersion := isVersionLessThan(t, comparedVersion); compGreaterThanOrEqual {
+		t.Skipf("Zabbix version %s is less than to %s which %s, skipping test.", serverVersion, comparedVersion, msg)
 	}
 }
 
