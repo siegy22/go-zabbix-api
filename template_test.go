@@ -8,8 +8,12 @@ import (
 
 func testCreateTemplate(hostGroup *zapi.HostGroup, t *testing.T) *zapi.Template {
 	template := zapi.Templates{zapi.Template{
-		Host:   "template name",
-		Groups: zapi.HostGroups{*hostGroup},
+		Host: "template name",
+		Groups: zapi.HostGroupIDs{
+			zapi.HostGroupID{
+				GroupID: hostGroup.GroupID,
+			},
+		},
 	}}
 	err := testGetAPI(t).TemplatesCreate(template)
 	if err != nil {
