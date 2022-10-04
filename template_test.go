@@ -6,10 +6,10 @@ import (
 	zapi "github.com/claranet/go-zabbix-api"
 )
 
-func testCreateTemplate(hostGroup *zapi.HostGroup, t *testing.T) *zapi.Template {
+func testCreateTemplate(hostGroups *zapi.HostGroupIDs, t *testing.T) *zapi.Template {
 	template := zapi.Templates{zapi.Template{
 		Host:   "template name",
-		Groups: zapi.HostGroups{*hostGroup},
+		Groups: *hostGroups,
 	}}
 	err := testGetAPI(t).TemplatesCreate(template)
 	if err != nil {
@@ -28,10 +28,27 @@ func testDeleteTemplate(template *zapi.Template, t *testing.T) {
 func TestTemplates(t *testing.T) {
 	api := testGetAPI(t)
 
-	hostGroup := testCreateHostGroup(t)
-	defer testDeleteHostGroup(hostGroup, t)
+	// Zabbix v6.2 introduced Template Groups and requires them for Templates
+	var groupIds zapi.HostGroupIDs
+	if compLessThan, _ := isVersionLessThan(t, "6.2"); compLessThan {
+		hostGroup := testCreateHostGroup(t)
+		defer testDeleteHostGroup(hostGroup, t)
+		groupIds = zapi.HostGroupIDs{
+			{
+				GroupID: hostGroup.GroupID,
+			},
+		}
+	} else {
+		templateGroup := testCreateTemplateGroup(t)
+		defer testDeleteTemplateGroup(templateGroup, t)
+		groupIds = zapi.HostGroupIDs{
+			{
+				GroupID: templateGroup.GroupID,
+			},
+		}
+	}
 
-	template := testCreateTemplate(hostGroup, t)
+	template := testCreateTemplate(&groupIds, t)
 	if template.TemplateID == "" {
 		t.Errorf("Template id is empty %#v", template)
 	}
