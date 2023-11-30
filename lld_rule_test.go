@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	dd "github.com/claranet/go-zabbix-api"
+	zapi "github.com/claranet/go-zabbix-api"
 )
 
 func testCreateLLDRule(template *dd.Template, t *testing.T) *dd.LLDRule {
@@ -42,10 +43,27 @@ func testDeleteLLDRule(rule *dd.LLDRule, t *testing.T) {
 func TestLLDRule(t *testing.T) {
 	api := testGetAPI(t)
 
-	hostGroup := testCreateHostGroup(t)
-	defer testDeleteHostGroup(hostGroup, t)
+	// Zabbix v6.2 introduced Template Groups and requires them for Templates
+	var groupIds zapi.HostGroupIDs
+	if compLessThan, _ := isVersionLessThan(t, "6.2"); compLessThan {
+		hostGroup := testCreateHostGroup(t)
+		defer testDeleteHostGroup(hostGroup, t)
+		groupIds = zapi.HostGroupIDs{
+			{
+				GroupID: hostGroup.GroupID,
+			},
+		}
+	} else {
+		templateGroup := testCreateTemplateGroup(t)
+		defer testDeleteTemplateGroup(templateGroup, t)
+		groupIds = zapi.HostGroupIDs{
+			{
+				GroupID: templateGroup.GroupID,
+			},
+		}
+	}
 
-	template := testCreateTemplate(hostGroup, t)
+	template := testCreateTemplate(&groupIds, t)
 	defer testDeleteTemplate(template, t)
 
 	lldRule := testCreateLLDRule(template, t)

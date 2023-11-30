@@ -26,6 +26,8 @@ func testDeleteApplication(app *zapi.Application, t *testing.T) {
 }
 
 func TestApplications(t *testing.T) {
+	skipTestIfVersionGreaterThanOrEqual(t, "5.4", "dropped support for Application API")
+
 	api := testGetAPI(t)
 
 	group := testCreateHostGroup(t)

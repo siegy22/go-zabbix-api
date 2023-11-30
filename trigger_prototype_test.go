@@ -6,6 +6,7 @@ import (
 
 	"github.com/claranet/go-zabbix-api"
 	dd "github.com/claranet/go-zabbix-api"
+	zapi "github.com/claranet/go-zabbix-api"
 )
 
 func testCreateTriggerPrototype(template *dd.Template, item *dd.ItemPrototype, t *testing.T) *dd.TriggerPrototype {
@@ -31,10 +32,27 @@ func testDeleteTriggerPrototype(trigger *dd.TriggerPrototype, t *testing.T) {
 func TestTriggerPrototype(t *testing.T) {
 	api := testGetAPI(t)
 
-	hostGroup := testCreateHostGroup(t)
-	defer testDeleteHostGroup(hostGroup, t)
+	// Zabbix v6.2 introduced Template Groups and requires them for Templates
+	var groupIds zapi.HostGroupIDs
+	if compLessThan, _ := isVersionLessThan(t, "6.2"); compLessThan {
+		hostGroup := testCreateHostGroup(t)
+		defer testDeleteHostGroup(hostGroup, t)
+		groupIds = zapi.HostGroupIDs{
+			{
+				GroupID: hostGroup.GroupID,
+			},
+		}
+	} else {
+		templateGroup := testCreateTemplateGroup(t)
+		defer testDeleteTemplateGroup(templateGroup, t)
+		groupIds = zapi.HostGroupIDs{
+			{
+				GroupID: templateGroup.GroupID,
+			},
+		}
+	}
 
-	template := testCreateTemplate(hostGroup, t)
+	template := testCreateTemplate(&groupIds, t)
 	defer testDeleteTemplate(template, t)
 
 	lldRule := testCreateLLDRule(template, t)
