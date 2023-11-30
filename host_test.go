@@ -113,7 +113,27 @@ func TestHosts(t *testing.T) {
 		t.Errorf("UserMacros is not empty: %#v", hosts[0].UserMacros)
 	}
 
-	template := testCreateTemplate(group, t)
+	// Zabbix v6.2 introduced Template Groups and requires them for Templates
+	var groupIds zapi.HostGroupIDs
+	if compLessThan, _ := isVersionLessThan(t, "6.2"); compLessThan {
+		hostGroup := testCreateHostGroup(t)
+		defer testDeleteHostGroup(hostGroup, t)
+		groupIds = zapi.HostGroupIDs{
+			{
+				GroupID: hostGroup.GroupID,
+			},
+		}
+	} else {
+		templateGroup := testCreateTemplateGroup(t)
+		defer testDeleteTemplateGroup(templateGroup, t)
+		groupIds = zapi.HostGroupIDs{
+			{
+				GroupID: templateGroup.GroupID,
+			},
+		}
+	}
+
+	template := testCreateTemplate(&groupIds, t)
 	defer testDeleteTemplate(template, t)
 
 	iface = zapi.HostInterface{IP: "127.0.0.1", Port: "10050", Type: zapi.Agent, UseIP: 1, Main: 1}
