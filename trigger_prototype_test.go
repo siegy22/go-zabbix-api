@@ -10,9 +10,16 @@ import (
 )
 
 func testCreateTriggerPrototype(template *dd.Template, item *dd.ItemPrototype, t *testing.T) *dd.TriggerPrototype {
+	var expression string
+	if compGreaterThanOrEqual, _ := isVersionGreaterThanOrEqual(t, "5.4"); compGreaterThanOrEqual {
+		expression = fmt.Sprintf("last(/%s/%s)=0", template.Host, item.Key)
+	} else {
+		expression = fmt.Sprintf("{%s:%s.last()}=0", template.Host, item.Key)
+	}
+
 	triggers := dd.TriggerPrototypes{{
 		Description: "test trigger prototype",
-		Expression:  fmt.Sprintf("{%s:%s.last()}=312", template.Host, item.Key),
+		Expression:  expression,
 		Priority:    zabbix.Warning,
 	}}
 	err := testGetAPI(t).TriggerPrototypesCreate(triggers)
