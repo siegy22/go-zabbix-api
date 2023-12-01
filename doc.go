@@ -20,7 +20,7 @@ Getting started
 	func main() {
 		user := "MyZabbixUsername"
 		pass := "MyZabbixPassword"
-		api := zabbix.NewAPI("http://localhost/api_jsonrpc.php")
+		api, err := zabbix.NewAPI("http://localhost/api_jsonrpc.php")
 		api.Login(user, pass)
 
 		res, err := api.Version()

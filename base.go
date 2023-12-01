@@ -8,6 +8,8 @@ import (
 	"log"
 	"net/http"
 	"sync/atomic"
+
+	"github.com/hashicorp/go-version"
 )
 
 type (
@@ -75,14 +77,25 @@ type API struct {
 	url       string
 	c         http.Client
 	id        int32
+
+	ServerVersion *version.Version
 }
 
 // NewAPI Creates new API access object.
 // Typical URL is http://host/api_jsonrpc.php or http://host/zabbix/api_jsonrpc.php.
 // It also may contain HTTP basic auth username and password like
 // http://username:password@host/api_jsonrpc.php.
-func NewAPI(url string) (api *API) {
-	return &API{url: url, c: http.Client{}, UserAgent: "github.com/claranet/zabbix"}
+func NewAPI(url string) (api *API, err error) {
+	api = &API{url: url, c: http.Client{}, UserAgent: "github.com/claranet/zabbix"}
+
+	var rawVersion string
+	rawVersion, err = api.Version()
+	if err != nil {
+		return
+	}
+	api.ServerVersion, _ = version.NewVersion(rawVersion)
+
+	return
 }
 
 // SetClient Allows one to use specific http.Client, for example with InsecureSkipVerify transport.
@@ -167,8 +180,13 @@ func (api *API) CallWithErrorParse(method string, params interface{}, result int
 // Login Calls "user.login" API method and fills api.Auth field.
 // This method modifies API structure and should not be called concurrently with other methods.
 func (api *API) Login(user, password string) (auth string, err error) {
-	params := map[string]string{"user": user, "password": password}
-	response, err := api.CallWithError("user.login", params)
+	var response Response
+	if api.ServerVersion.GreaterThan(version.Must(version.NewVersion("5.4"))) {
+		response, err = api.CallWithError("user.login", map[string]string{"username": user, "password": password})
+	} else {
+		response, err = api.CallWithError("user.login", map[string]string{"user": user, "password": password})
+	}
+
 	if err != nil {
 		return
 	}

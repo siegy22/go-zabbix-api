@@ -42,8 +42,13 @@ func testGetAPI(t *testing.T) *zapi.API {
 		return _api
 	}
 
+	var err error
 	url, user, password := os.Getenv("TEST_ZABBIX_URL"), os.Getenv("TEST_ZABBIX_USER"), os.Getenv("TEST_ZABBIX_PASSWORD")
-	_api = zapi.NewAPI(url)
+	_api, err = zapi.NewAPI(url)
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	_api.SetClient(http.DefaultClient)
 	v := os.Getenv("TEST_ZABBIX_VERBOSE")
 	if v != "" && v != "0" {
