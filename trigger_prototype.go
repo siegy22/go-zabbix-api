@@ -3,21 +3,21 @@ package zabbix
 // TriggerPrototype represent Zabbix trigger prototype object
 // https://www.zabbix.com/documentation/3.2/manual/api/reference/triggerprototype/object
 type TriggerPrototype struct {
-	TriggerID          string            `json:"triggerid,omitempty"` // Readonly
-	Description        string            `json:"description"`         // Reqired
-	Expression         string            `json:"expression"`          // Required
-	Commemts           string            `json:"comments,omitempty"`
-	Priority           SeverityType      `json:"priority,omitempty,string"`
-	Status             StatusType        `json:"status,omitempty,string"`
-	TemplateID         string            `json:"templateid,omitempty"` // Readonly
-	Type               int               `json:"type,omitempty,string"`
-	URL                string            `json:"url,omitempty"`
-	RecoveryMode       int               `json:"recovery_mode,omitempty,string"`
-	RecoveryExpression string            `json:"recovery_expression,omitempty"`
-	CorrelationMode    int               `json:"correlation_mode,omitempty,string"`
-	CorrelationTag     string            `json:"correlation_tag,omitempty"`
-	ManualClose        int               `json:"manual_close,omitempty,string"`
-	Dependencies       TriggerPrototypes `json:"dependencies,omitempty"`
+	TriggerID          string              `json:"triggerid,omitempty"` // Readonly
+	Description        string              `json:"description"`         // Required
+	Expression         string              `json:"expression"`          // Required
+	Commemts           string              `json:"comments,omitempty"`
+	Priority           SeverityType        `json:"priority,omitempty,string"`
+	Status             StatusType          `json:"status,omitempty,string"`
+	TemplateID         string              `json:"templateid,omitempty"` // Readonly
+	Type               int                 `json:"type,omitempty,string"`
+	URL                string              `json:"url,omitempty"`
+	RecoveryMode       int                 `json:"recovery_mode,omitempty,string"`
+	RecoveryExpression string              `json:"recovery_expression,omitempty"`
+	CorrelationMode    int                 `json:"correlation_mode,omitempty,string"`
+	CorrelationTag     string              `json:"correlation_tag,omitempty"`
+	ManualClose        int                 `json:"manual_close,omitempty,string"`
+	Dependencies       TriggerPrototypeIDs `json:"dependencies,omitempty"`
 
 	Functions TriggerFunctions `json:"functions,omitempty"`
 	// Return the hosts that the trigger prototype belongs to in the hosts property.
@@ -26,6 +26,12 @@ type TriggerPrototype struct {
 
 // TriggerPrototypes is an array of TriggerPrototype
 type TriggerPrototypes []TriggerPrototype
+
+type TriggerPrototypeID struct {
+	TriggerID string `json:"triggerid"`
+}
+
+type TriggerPrototypeIDs []TriggerPrototypeID
 
 // TriggerPrototypesGet Wrapper for trigger.get
 // https://www.zabbix.com/documentation/3.2/manual/api/reference/triggerprototype/get

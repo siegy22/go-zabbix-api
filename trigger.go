@@ -62,7 +62,7 @@ type Trigger struct {
 
 	Priority     SeverityType     `json:"priority,string"`
 	Status       StatusType       `json:"status,string"`
-	Dependencies Triggers         `json:"dependencies,omitempty"`
+	Dependencies TriggerIDs       `json:"dependencies,omitempty"`
 	Functions    TriggerFunctions `json:"functions,omitempty"`
 	// Items contained by the trigger in the items property.
 	ContainedItems Items `json:"items,omitempty"`
@@ -72,6 +72,12 @@ type Trigger struct {
 
 // Triggers is an array of Trigger
 type Triggers []Trigger
+
+type TriggerID struct {
+	TriggerID string `json:"triggerid"`
+}
+
+type TriggerIDs []TriggerID
 
 // TriggersGet Wrapper for trigger.get
 // https://www.zabbix.com/documentation/3.2/manual/api/reference/trigger/get
