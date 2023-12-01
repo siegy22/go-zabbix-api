@@ -7,13 +7,12 @@ import (
 )
 
 func testCreateAction(group *zapi.HostGroup, t *testing.T) *zapi.Action {
-	auth := zapi.Password
 	actions := zapi.Actions{{
 		Name:        "Register Linux servers",
 		EventSource: zapi.AutoRegistrationEvent,
 		Status:      zapi.Enabled,
 		Filter: zapi.ActionFilter{
-			EvaluationType: zapi.Or,
+			EvaluationType: zapi.Custom,
 			Formula:        "A or B",
 			Conditions: zapi.ActionFilterConditions{
 				{
@@ -33,9 +32,6 @@ func testCreateAction(group *zapi.HostGroup, t *testing.T) *zapi.Action {
 		Operations: zapi.ActionOperations{
 			{
 				OperationType:  zapi.AddToHostGroup,
-				Period:         "0",
-				StepFrom:       1,
-				StepTo:         1,
 				EvaluationType: zapi.AndOr,
 				HostGroups: zapi.ActionOperationHostGroups{
 					{
@@ -44,21 +40,10 @@ func testCreateAction(group *zapi.HostGroup, t *testing.T) *zapi.Action {
 				},
 			},
 			{
-				OperationType:  zapi.RemoteCommand,
-				StepFrom:       1,
-				StepTo:         1,
+				OperationType:  zapi.SetHostInventoryMode,
 				EvaluationType: zapi.AndOr,
-				Command: &zapi.ActionOperationCommand{
-					Type:     zapi.SshCommand,
-					AuthType: &auth,
-					Command:  "id",
-					Username: "root",
-					Password: "password",
-				},
-				CommandHosts: zapi.ActionOperationCommandHosts{
-					{
-						HostID: "0",
-					},
+				Inventory: &zapi.ActionOperationInventory{
+					InventoryMode: "1",
 				},
 			},
 		},
@@ -95,6 +80,8 @@ func TestAction(t *testing.T) {
 	getByIdAction.EventSource = ""
 	// NOTE: pause_suppressed set only TriggerEvent
 	getByIdAction.PauseSuppressed = nil
+	getByIdAction.Period = ""
+	getByIdAction.Operations = nil
 	err = api.ActionsUpdate(zapi.Actions{*getByIdAction})
 	if err != nil {
 		t.Error(err)

@@ -134,15 +134,15 @@ const (
 // https://www.zabbix.com/documentation/5.0/manual/api/reference/action/object
 type Action struct {
 	ActionID        string     `json:"actionid,omitempty"`
-	Period          string     `json:"esc_period"`
+	Period          string     `json:"esc_period,omitempty"`
 	EventSource     EventType  `json:"eventsource,omitempty"` // NOTE: Can not update
 	Name            string     `json:"name"`
-	DefaultMessage  string     `json:"def_longdata"`  // NOTE: no support on Zabbix 5.0 onward
-	DefaultSubject  string     `json:"def_shortdata"` // NOTE: no support on Zabbix 5.0 onward
-	RecoveryMessage string     `json:"r_longdata"`    // NOTE: no support on Zabbix 5.0 onward
-	RecoverySubject string     `json:"r_shortdata"`   // NOTE: no support on Zabbix 5.0 onward
-	AckMessage      string     `json:"ack_longdata"`  // NOTE: no support on Zabbix 5.0 onward
-	AckSubject      string     `json:"ack_shortdata"` // NOTE: no support on Zabbix 5.0 onward
+	DefaultMessage  string     `json:"def_longdata,omitempty"`  // NOTE: no support on Zabbix 5.0 onward
+	DefaultSubject  string     `json:"def_shortdata,omitempty"` // NOTE: no support on Zabbix 5.0 onward
+	RecoveryMessage string     `json:"r_longdata,omitempty"`    // NOTE: no support on Zabbix 5.0 onward
+	RecoverySubject string     `json:"r_shortdata,omitempty"`   // NOTE: no support on Zabbix 5.0 onward
+	AckMessage      string     `json:"ack_longdata,omitempty"`  // NOTE: no support on Zabbix 5.0 onward
+	AckSubject      string     `json:"ack_shortdata,omitempty"` // NOTE: no support on Zabbix 5.0 onward
 	Status          StatusType `json:"status,omitempty,string"`
 	PauseSuppressed *PauseType `json:"pause_suppressed,omitempty,string"`
 
@@ -195,7 +195,7 @@ type ActionOperations []ActionOperation
 
 type ActionOperationCommand struct {
 	OperationID string                              `json:"operationid,omitempty"`
-	Type        ActionOperationCommandType          `json:"type,string"`
+	Type        ActionOperationCommandType          `json:"type,string,omitempty"`
 	Command     string                              `json:"command,omitempty"`
 	AuthType    *ActionOperationCommandAuthType     `json:"authtype,omitempty,string"`
 	ExecuteOn   *ActionOperationCommandExecutorType `json:"execute_on,omitempty,string"`
