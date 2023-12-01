@@ -5,13 +5,13 @@ package zabbix
 type ItemPrototype struct {
 	ItemID               string    `json:"itemid,omitempty"`  // Readonly
 	Delay                string    `json:"delay"`             // Required
-	HostID               string    `json:"hostid"`            // Required
+	HostID               string    `json:"hostid,omitempty"`  // Required
 	InterfaceID          string    `json:"interfaceid"`       // Required
 	Key                  string    `json:"key_"`              // Required
 	Name                 string    `json:"name"`              // Required
 	Type                 ItemType  `json:"type,string"`       // Required
 	ValueType            ValueType `json:"value_type,string"` // Required
-	RuleID               string    `json:"ruleid"`            // Required for item prototype creation
+	RuleID               string    `json:"ruleid,omitempty"`  // Required for item prototype creation
 	AuthType             int       `json:"authtype,omitempty,string"`
 	DataType             DataType  `json:"data_type,omitempty,string"`
 	DelayFlex            string    `json:"delay_flex,omitempty"`
@@ -43,8 +43,8 @@ type ItemPrototype struct {
 	Username             string    `json:"username,omitempty"`
 	Valuemapid           string    `json:"valuemapid,omitempty"`
 
-	DiscoveryRule LLDRule `json:"DiscoveryRule,omitempty"`
-	Hosts         Hosts   `json:"hosts,omitempty"`
+	DiscoveryRule *LLDRule `json:"DiscoveryRule,omitempty"`
+	Hosts         Hosts    `json:"hosts,omitempty"`
 }
 
 // ItemPrototypes is an array of ItemPrototype

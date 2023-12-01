@@ -13,9 +13,9 @@ func testCreateItemPrototype(template *dd.Template, lldRule *dd.LLDRule, t *test
 		Delay:       "30",
 		HostID:      template.TemplateID,
 		InterfaceID: "0",
-		Key:         "key.lala.lolo",
+		Key:         "vfs.fs.size[{#FSNAME},free]",
 		Type:        dd.ZabbixAgent,
-		Name:        "item prototype test",
+		Name:        "Free disk space on {#FSNAME}",
 		ValueType:   dd.Unsigned,
 	}}
 	err := testGetAPI(t).ItemPrototypesCreate(items)
@@ -72,6 +72,8 @@ func TestItemPrototype(t *testing.T) {
 	}
 
 	itemPrototype.Name = "update_item_prototype_name"
+	itemPrototype.HostID = ""
+	itemPrototype.RuleID = ""
 	err = api.ItemPrototypesUpdate(dd.ItemPrototypes{*itemPrototype})
 	if err != nil {
 		t.Error(err)
