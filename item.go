@@ -109,14 +109,14 @@ const (
 type Item struct {
 	ItemID       string    `json:"itemid,omitempty"`
 	Delay        string    `json:"delay"`
-	HostID       string    `json:"hostid"`
+	HostID       string    `json:"hostid,omitempty"`
 	InterfaceID  string    `json:"interfaceid,omitempty"`
 	Key          string    `json:"key_"`
 	Name         string    `json:"name"`
 	Type         ItemType  `json:"type,string"`
 	ValueType    ValueType `json:"value_type,string"`
-	DataType     DataType  `json:"data_type,string"`
-	Delta        DeltaType `json:"delta,string"`
+	DataType     DataType  `json:"data_type,string,omitempty"`
+	Delta        DeltaType `json:"delta,string,omitempty"`
 	Description  string    `json:"description"`
 	Error        string    `json:"error,omitempty"`
 	History      string    `json:"history,omitempty"`
@@ -126,7 +126,7 @@ type Item struct {
 	// Fields below used only when creating applications
 	ApplicationIds []string `json:"applications,omitempty"`
 
-	ItemParent Hosts `json:"hosts"`
+	ItemParent Hosts `json:"hosts,omitempty"`
 }
 
 // Items is an array of Item

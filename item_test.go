@@ -61,6 +61,7 @@ func TestItems(t *testing.T) {
 	}
 
 	item.Name = "another name"
+	item.HostID = ""
 	err = api.ItemsUpdate(zapi.Items{*item})
 	if err != nil {
 		t.Error(err)
