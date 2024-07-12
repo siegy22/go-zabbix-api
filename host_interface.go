@@ -20,8 +20,8 @@ const (
 )
 
 type InterfaceDetails struct {
-	Version  int   `json:"version"`
-	Community  int `json:"community"`
+	Version    int    `json:"version"`
+	Community  string `json:"community"`
 }
 
 // HostInterface represents zabbix host interface type
