@@ -20,7 +20,7 @@ const (
 )
 
 type InterfaceDetails struct {
-	Version    int    `json:"version"`
+	Version    int    `json:"version,string"`
 	Community  string `json:"community"`
 }
 
