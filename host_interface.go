@@ -1,5 +1,10 @@
 package zabbix
 
+import (
+	"encoding/json"
+)
+
+
 type (
 	// InterfaceType different interface type
 	InterfaceType int
@@ -39,3 +44,31 @@ type HostInterface struct {
 
 // HostInterfaces is an array of HostInterface
 type HostInterfaces []HostInterface
+
+// Custom unmarshal function
+func (h *HostInterface) UnmarshalJSON(data []byte) error {
+	type Alias HostInterface
+	aux := &struct {
+		Details json.RawMessage `json:"details"`
+		*Alias
+	}{
+		Alias: (*Alias)(h),
+	}
+
+	if err := json.Unmarshal(data, &aux); err != nil {
+		return err
+	}
+
+	// Handle the details field based on its type
+	if string(aux.Details) != "[]" {
+		var details InterfaceDetails
+		if err := json.Unmarshal(aux.Details, &details); err != nil {
+			return err
+		}
+		h.Details = details
+	} else {
+		h.Details = InterfaceDetails{}
+	}
+
+	return nil
+}
