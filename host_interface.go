@@ -25,8 +25,17 @@ const (
 )
 
 type InterfaceDetails struct {
-	Version   int    `json:"version,string"`
-	Community string `json:"community"`
+	Version        int    `json:"version,string,omitempty"`
+	Bulk           int    `json:"bulk,string,omitempty"`
+	Community      string `json:"community,omitempty"`
+	MaxRepetitions int    `json:"max_repetitions,string,omitempty"`
+	SecurityName   string `json:"securityname,omitempty"`
+	SecurityLevel  int    `json:"securitylevel,string,omitempty"`
+	AuthPassphrase string `json:"authpassphrase,omitempty"`
+	PrivPassphrase string `json:"privpassphrase,omitempty"`
+	AuthProtocol   int    `json:"authprotocol,string,omitempty"`
+	PrivProtocol   int    `json:"privprotocol,string,omitempty"`
+	ContextName    string `json:"contextname,omitempty"`
 }
 
 // HostInterface represents zabbix host interface type
